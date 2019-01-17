@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 
 import com.ck.flickster.adapters.MoviesAdapter;
 import com.ck.flickster.models.Movie;
@@ -32,7 +31,6 @@ public class MovieActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie);
 
-
         // initialize "movies"
         movies = new ArrayList<>();
 
@@ -48,6 +46,7 @@ public class MovieActivity extends AppCompatActivity {
 
         AsyncHttpClient client = new AsyncHttpClient();
 
+        // get the data
         client.get(MOVIE_URL, new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -55,9 +54,6 @@ public class MovieActivity extends AppCompatActivity {
                     JSONArray movieJsonArray = response.getJSONArray("results");
                     movies.addAll(Movie.fromJsonArray(movieJsonArray));
                     adapter.notifyDataSetChanged();
-                    //movies = Movie.fromJsonArray(movieJsonArray);
-                    //Log.d("smile", movies.toString());
-                    Log.d("smile", movieJsonArray.toString());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

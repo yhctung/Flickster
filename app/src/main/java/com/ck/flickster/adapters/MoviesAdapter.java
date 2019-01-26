@@ -1,6 +1,7 @@
 package com.ck.flickster.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -13,8 +14,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.ck.flickster.DetailActivity;
 import com.ck.flickster.R;
 import com.ck.flickster.models.Movie;
+
+import org.parceler.Parcels;
 
 import java.util.List;
 
@@ -45,6 +49,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Log.d("smile", "onBindViewHolder" + position);
         Movie movie = movies.get(position);
+
         // Bind the movie data into the view holder
         holder.bind(movie);
     }
@@ -63,15 +68,16 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
         ImageView ivPoster;
         RelativeLayout container;
 
-        public ViewHolder(@NonNull View itemView){
+        public ViewHolder(View itemView){
             super(itemView);
 
             tvTitle = itemView.findViewById(R.id.tvTitle);
             tvOverview = itemView.findViewById(R.id.tvOverview);
             ivPoster = itemView.findViewById(R.id.ivPoster);
+            container = itemView.findViewById(R.id.container);
         }
 
-        public void bind(Movie movie){
+        public void bind(final Movie movie){
             tvTitle.setText(movie.getTitle());
             tvOverview.setText(movie.getOverview());
             // default portrait : poster
@@ -82,13 +88,16 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
             }
             // load it
             Glide.with(context).load(imageUrl).into(ivPoster);
-            /*
-            container.setOnClickListener({
-                Intent i = new Intent(context, DetailActivity.class);
-                i.putExtra("movie", Parcels.wrap(movie));
-                context.startActivity(i);
+            // Add click listener on the whole row
+            container.setOnClickListener(new View.OnClickListener(){
+                public void onClick(View view){
+                    // go to detail activity
+                    Intent i = new Intent(context, DetailActivity.class);
+                    i.putExtra("title", movie.getTitle());
+                    i.putExtra("movie", Parcels.wrap(movie));
+                    context.startActivity(i);
+                }
             });
-             */
 
         }
 

@@ -20,7 +20,7 @@ import org.parceler.Parcels;
 
 import cz.msebera.android.httpclient.Header;
 
-import static com.google.android.youtube.player.YouTubePlayer.*;
+import static com.google.android.youtube.player.YouTubePlayer.Provider;
 
 public class DetailActivity extends YouTubeBaseActivity {
 
@@ -39,11 +39,13 @@ public class DetailActivity extends YouTubeBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
+        // find all views
         tvTitle = findViewById(R.id.tvTitle);
         tvOverview = findViewById(R.id.tvOverview);
         ratingBar = findViewById(R.id.ratingBar);
         youtubePlayerView = findViewById(R.id.player);
 
+        // get the data
         movie = (Movie) Parcels.unwrap(getIntent().getParcelableExtra("movie"));
 
         // set title, overview, rating
@@ -53,6 +55,7 @@ public class DetailActivity extends YouTubeBaseActivity {
 
         AsyncHttpClient client = new AsyncHttpClient();
 
+        // get the video
         client.get(String.format(TRAILERS_API, movie.getmovieId()), new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -61,9 +64,40 @@ public class DetailActivity extends YouTubeBaseActivity {
                     if (results.length() == 0){
                         // display poster
                     }
-                    else {
+                    else if (movie.getVoteAverage() > 5) {
                         JSONObject movieTrailer = results.getJSONObject(0);
                         String youtubeKey = movieTrailer.getString("key");
+                        initializeYoutube(youtubeKey);
+                    }
+                    else if (movie.getVoteAverage() <= 5) {
+                        JSONObject movieTrailer = results.getJSONObject(0);
+                        final String youtubeKey = movieTrailer.getString("key");
+                        /* // Image -> click to see video
+                        // how to use onBindViewHolder() here?
+
+                        ImageView ivPoster;
+                        ivPoster = itemView.findViewById(R.id.ivPoster);
+
+                        // Get image url
+                        String imageUrl;
+                        // Go to the backdrop path if phone is in landscape
+                        if (context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+                            imageUrl = movie.getBackdropPath();
+                        }
+                        else {  // default portrait : poster
+                            imageUrl = movie.getPosterPath();
+                        }
+
+                        // Load poster image
+                        Glide.with(context).load(imageUrl).into(ivPoster);
+
+                        // Set on click listener
+                        ivPoster.setOnClickListener(new View.OnClickListener(){
+                        public void onClick(View view){
+                            initializeYoutube(youtubeKey);
+                        }
+                        });
+                        */
                         initializeYoutube(youtubeKey);
                     }
                 } catch (JSONException e) {
@@ -78,14 +112,15 @@ public class DetailActivity extends YouTubeBaseActivity {
         });
     }
 
+    // starting the actual video
     private void initializeYoutube(final String youtubeKey) {
-        youtubePlayerView.initialize(YOUTUBE_API_KEY, new OnInitializedListener() {
+        youtubePlayerView.initialize(YOUTUBE_API_KEY, new YouTubePlayer.OnInitializedListener() {
             @Override
             public void onInitializationSuccess(Provider provider, YouTubePlayer youTubePlayer, boolean b) {
-                Log.d("smile", "on init success");
-                if (movie.getVoteAverage() > 5) {
+                //Log.d("smile", "on init success");
+                if (movie.getVoteAverage() > 5) {       // play automatically if rating > 5
                     youTubePlayer.loadVideo(youtubeKey);
-                } else if (movie.getVoteAverage() <= 5) {
+                } else if (movie.getVoteAverage() <= 5) {   // wait if < 5
                     youTubePlayer.cueVideo(youtubeKey);
                 }
             }

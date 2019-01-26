@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +23,10 @@ import java.util.List;
 
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder> {
 
+    // needed for rendering
     Context context;
+
+    // List of movies
     List<Movie> movies;
 
     public MoviesAdapter(Context context, List<Movie> movies) {
@@ -36,7 +38,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Log.d("smile", "onCreateViewHolder");
+        // for debugging
+        // Log.d("smile", "onCreateViewHolder");
 
         // use layout to create view
         View view = LayoutInflater.from(context).inflate(R.layout.item_movie, parent, false);
@@ -45,9 +48,13 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
         return new ViewHolder(view);
     }
 
+    // binds view to item
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Log.d("smile", "onBindViewHolder" + position);
+        // for debugging
+        // Log.d("smile", "onBindViewHolder" + position);
+
+        // get data at specific position
         Movie movie = movies.get(position);
 
         // Bind the movie data into the view holder
@@ -63,6 +70,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
+        // objects in the view
         TextView tvTitle;
         TextView tvOverview;
         ImageView ivPoster;
@@ -71,6 +79,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
         public ViewHolder(View itemView){
             super(itemView);
 
+            // link views and ids
             tvTitle = itemView.findViewById(R.id.tvTitle);
             tvOverview = itemView.findViewById(R.id.tvOverview);
             ivPoster = itemView.findViewById(R.id.ivPoster);
@@ -78,16 +87,41 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
         }
 
         public void bind(final Movie movie){
+
+            // add title and overview to view
             tvTitle.setText(movie.getTitle());
             tvOverview.setText(movie.getOverview());
-            // default portrait : poster
-            String imageUrl = movie.getPosterPath();
+
+            String imageUrl;
+            int placeholderID;
+            ImageView imageView;
+
             // Go to the backdrop path if phone is in landscape
             if (context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
                 imageUrl = movie.getBackdropPath();
+                // placeholderID = R.drawable
+                // imageView = ivBackdrop;
             }
+            else {  // default portrait : poster
+                imageUrl = movie.getPosterPath();
+                // placeholderID = R.drawable
+                // imageView = ivPoster;
+            }
+
+
             // load it
             Glide.with(context).load(imageUrl).into(ivPoster);
+
+            /* Not working for some reason
+            // load image using Glide
+            GlideApp.with(context)
+                    .load(imageUrl)
+                    .transform(new RoundedCornersTransformation(30, 0))
+                    .placeholder(placeholderId)
+                    .error(placeholderId)
+                    .into(imageView);
+            */
+
             // Add click listener on the whole row
             container.setOnClickListener(new View.OnClickListener(){
                 public void onClick(View view){

@@ -12,24 +12,30 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="0dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginTop="14dp"
+        android:contentDescription="poster"
         tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
         android:id="@+id/tvTitle"
-        android:layout_width="wrap_content"
+        android:layout_width="223dp"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="3dp"
         android:layout_toEndOf="@+id/ivPoster"
+        android:textAlignment="textStart"
         android:textSize="24sp"
         tools:text="Spider-Man: Into the Spider-Verse" />
 
     <TextView
         android:id="@+id/tvOverview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="230dp"
+        android:layout_height="184dp"
         android:layout_below="@+id/tvTitle"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="0dp"
         android:layout_toEndOf="@+id/ivPoster"
         tools:text="Miles Morales is juggling his life between being a high school student and being Spider-Man. However, when Wilson &quot;Kingpin&quot; Fisk uses a super collider, another Spider-Man from another dimension, Peter Parker, accidentally winds up in Miles' dimension, joining others from across the &quot;Spider-Verse&quot;." />
 </RelativeLayout>
